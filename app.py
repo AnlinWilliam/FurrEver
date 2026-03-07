@@ -421,9 +421,10 @@ def get_user_preference(user_id):
     return cursor.fetchone()
 
 # ---------------- GEMINI CHATBOT ----------------
-def ask_gemini_petcare(question, pet_type=None, pet_age=None):
+def ask_gemini_petcare_chat(question, pet_type=None, pet_age=None):
+    """Chatbot version: uses pet_type and pet_age if available"""
     try:
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key={API_KEY}"
 
         if pet_type and pet_age:
             prompt = (
@@ -447,10 +448,10 @@ def ask_gemini_petcare(question, pet_type=None, pet_age=None):
         }
 
         response = requests.post(url, json=payload, timeout=10)
-        
+
         if response.status_code != 200:
             return f"API Error: Status {response.status_code}"
-            
+
         data = response.json()
 
         if "error" in data:
@@ -463,12 +464,11 @@ def ask_gemini_petcare(question, pet_type=None, pet_age=None):
             .get("text", "Sorry, I could not generate a response.")
         )
         return reply
-        
-    except Exception as e:
-        return f"Sorry, API call failed. Please try again."
+
+    except Exception:
+        return "Sorry, API call failed. Please try again."
 
 #----------------------------chatbot--------------------------------
-
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
@@ -500,14 +500,14 @@ def chat():
     # -------- NORMAL CHAT --------
     try:
         if preference:
-            reply = ask_gemini_petcare(
+            reply = ask_gemini_petcare_chat(
                 user_message,
                 preference["pet_type"],
                 preference["pet_age"]
             )
         else:
-            reply = ask_gemini_petcare(user_message)
-    except Exception as e:
+            reply = ask_gemini_petcare_chat(user_message)
+    except Exception:
         reply = "Sorry, I couldn't process that. Please try again."
 
     return jsonify({"reply": reply})
