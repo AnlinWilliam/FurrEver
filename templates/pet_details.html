@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +32,6 @@
             padding: 30px;
         }
 
-        /* Image */
         .pet-image img {
             width: 360px;
             height: 360px;
@@ -41,7 +39,6 @@
             border-radius: 14px;
         }
 
-        /* Content */
         .pet-info {
             flex: 1;
         }
@@ -87,7 +84,6 @@
             margin-right: 10px;
         }
 
-        /* Owner Box */
         .owner-box {
             background: #fff7f0;
             border-left: 5px solid #ff7a00;
@@ -95,7 +91,6 @@
             border-radius: 10px;
         }
 
-        /* Buttons */
         .buttons {
             margin-top: 30px;
             display: flex;
@@ -168,7 +163,10 @@
 
             <div class="section">
                 <h3>Pet Details</h3>
-                <p class="detail"><i class="fa-solid fa-syringe"></i> Vaccinated: {{ pet.vaccinated }}</p>
+                <p class="detail">
+                    <i class="fa-solid fa-syringe"></i>
+                    Vaccinated: {{ pet.vaccinated }}
+                </p>
             </div>
 
             <div class="section owner-box">
@@ -178,16 +176,48 @@
                 <p class="detail"><i class="fa-solid fa-envelope"></i> {{ pet.email }}</p>
             </div>
 
-            <div class="buttons">
-                <a href="{{ url_for('adopt') }}">
-                    <button class="btn btn-back">← Back</button>
-                </a>
-                <button class="btn btn-adopt">Request Adoption</button>
-            </div>
+           <div class="buttons">
+    <a href="{{ url_for('adopt') }}">
+        <button type="button" class="btn btn-back">← Back</button>
+    </a>
+
+    {% if pet.status != "Adopted" %}
+    <form action="{{ url_for('request_adoption', pet_id=pet.id) }}" method="POST">
+        <button type="submit" class="btn btn-adopt">
+            Request Adoption
+        </button>
+    </form>
+    {% else %}
+    <button disabled style="background:gray;">
+        This pet has been adopted 🐾
+    </button>
+    {% endif %}
+</div>
 
         </div>
     </div>
 </div>
+
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Flash Popup -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        Swal.fire({
+          icon: "{{ messages[0][0] }}",
+          title: "Notification",
+          text: "{{ messages[0][1] }}",
+          confirmButtonColor: "#ff7a00"
+        });
+      });
+
+      
+    </script>
+  {% endif %}
+{% endwith %}
 
 </body>
 </html>

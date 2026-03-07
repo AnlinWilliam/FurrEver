@@ -52,7 +52,7 @@ body{
     overflow-y:auto;
     display:flex;
     flex-direction:column;
-    background:#eaf3ff;
+    background:#f4f6f8;
 }
 
 /* Messages */
@@ -112,7 +112,7 @@ body{
     <div class="chat-header">
         <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png">
         <h2>PawCare Bot</h2>
-        <a href="/" style="margin-left: auto; text-decoration: none; background: #ff6b6b; color: white; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Back</a>
+        <a href="/" style="margin-left: auto; text-decoration: none; background: #ff7a00; color: white; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Back</a>
     </div>
 
     <!-- Messages -->
@@ -146,7 +146,7 @@ function sendMessage() {
     inputBox.value = "";
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    // ✅ Bot typing message (IMPORTANT)
+    //Bot typing message 
     const typingMsg = document.createElement("div");
     typingMsg.className = "message bot typing";
     typingMsg.textContent = "PawCare Bot is typing...";

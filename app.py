@@ -7,10 +7,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from flask import jsonify
 from werkzeug.utils import secure_filename
-import os
+import os 
 import requests
+from flask import flash
 from dotenv import load_dotenv
 import smtplib
+import numpy as np
+
+
+import joblib
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "ml_model", "pet_model.pkl")
+
+model = joblib.load(model_path)
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
@@ -46,7 +57,7 @@ Please take appropriate action.
 
     msg.attach(MIMEText(body, "plain"))
 
-    # ✅ Attach image if available
+    # Attach image if available
     if filename:
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         with open(file_path, "rb") as img:
@@ -116,6 +127,12 @@ def home():
 # ------------------- ADD PET PAGE ----------------------------------
 @app.route('/add-pet', methods=['GET', 'POST'])
 def add_pet():
+
+    if "user_id" not in session:
+        return redirect(url_for("auth", next=request.path))
+
+
+    owner_id = session['user_id']
     if request.method == 'POST':
         db = get_db()
         cursor = db.cursor()
@@ -136,12 +153,12 @@ def add_pet():
         cursor.execute("""
             INSERT INTO pets 
             (name, age, type, breed, description, vaccinated,
-             owner_name, contact, email, location, image)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+             owner_name, contact, email, location, image, owner_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             name, age, pet_type, breed, description,
             vaccinated, owner_name, contact, email, location,
-            filename
+            filename, owner_id 
         ))
 
         db.commit()
@@ -149,12 +166,14 @@ def add_pet():
         db.close()
 
         return redirect('/adopt')
+    
 
     return render_template('add_pet.html')
 
 # ----------------------- ADOPT PAGE ---------------------------------------
 @app.route('/adopt')
 def adopt():
+
     db = get_db()
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM pets")
@@ -175,6 +194,10 @@ def adopt():
 
 @app.route('/pet/<int:pet_id>')
 def pet_details(pet_id):
+
+    if "user_id" not in session:
+            return redirect(url_for("auth", next=request.path))
+
     db = get_db()
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM pets WHERE id = %s", (pet_id,))
@@ -185,6 +208,163 @@ def pet_details(pet_id):
         return "Pet not found", 404
 
     return render_template("pet_details.html", pet=pet)
+
+#---------------------------request adoption------------------------------------
+
+@app.route('/request-adoption/<int:pet_id>', methods=['POST'])
+def request_adoption(pet_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("auth", next=request.path))
+
+    db = get_db()
+    cursor = db.cursor()
+
+    requester_id = session["user_id"]
+    message = request.form.get("message")
+
+    # Get pet owner
+    cursor.execute("SELECT owner_id FROM pets WHERE id=%s", (pet_id,))
+    pet = cursor.fetchone()
+
+    if not pet:
+        cursor.close()
+        db.close()
+        return "Pet not found"
+
+    if pet[0] == requester_id:
+        cursor.close()
+        db.close()
+        flash("You cannot request your own pet.", "error")
+        return redirect(url_for("pet_details", pet_id=pet_id))
+
+    # Prevent duplicate request
+    cursor.execute("""
+        SELECT id FROM adoption_requests
+        WHERE pet_id=%s AND requester_id=%s
+    """, (pet_id, requester_id))
+
+    if cursor.fetchone():
+        cursor.close()
+        db.close()
+        flash("You already requested this pet.", "warning")
+        return redirect(url_for("pet_details", pet_id=pet_id))
+
+    # Insert request
+    cursor.execute("""
+        INSERT INTO adoption_requests (pet_id, requester_id, message)
+        VALUES (%s, %s, %s)
+    """, (pet_id, requester_id, message))
+
+    db.commit()
+    cursor.close()
+    db.close()
+
+    flash("Adoption request sent successfully! 🐾", "success")
+    return redirect(url_for("pet_details", pet_id=pet_id))
+
+#--------------------------owner dashboard-------------------------------------------
+@app.route('/owner_dashboard')
+def owner_dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('auth', next=request.path))
+
+    owner_id = session['user_id']
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    # Get owner pets
+    cursor.execute("SELECT * FROM pets WHERE owner_id=%s", (owner_id,))
+    pets = cursor.fetchall()
+
+    # Get adoption requests for owner pets
+    cursor.execute("""
+    SELECT ar.*, p.name AS pet_name, u.name AS requester_name
+    FROM adoption_requests ar
+    JOIN pets p ON ar.pet_id = p.id
+    JOIN users u ON ar.requester_id = u.id
+    WHERE p.owner_id = %s
+    ORDER BY ar.created_at DESC
+    """, (owner_id,))
+    requests = cursor.fetchall()
+    # Get requests sent by this user
+    cursor.execute("""
+    SELECT ar.*, p.name AS pet_name
+    FROM adoption_requests ar
+    JOIN pets p ON ar.pet_id = p.id
+    WHERE ar.requester_id = %s
+    ORDER BY ar.created_at DESC
+    """, (owner_id,))
+    sent_requests = cursor.fetchall()
+
+    print("Logged owner:", owner_id)
+    print("Requests:", requests)
+    print("Sent Requests:", sent_requests)
+    cursor.close()
+    db.close()
+
+    return render_template("owner_dashboard.html", pets=pets, requests=requests,sent_requests=sent_requests)
+
+
+
+@app.route('/approve_request/<int:request_id>')
+def approve_request(request_id):
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT pet_id FROM adoption_requests WHERE id=%s", (request_id,))
+    req = cursor.fetchone()
+
+    if req:
+        pet_id = req['pet_id']
+
+        # Approve request
+        cursor.execute("""
+            UPDATE adoption_requests 
+            SET status='Approved' 
+            WHERE id=%s
+        """, (request_id,))
+
+        # Mark pet as Adopted
+        cursor.execute("""
+            UPDATE pets 
+            SET status='Adopted'
+            WHERE id=%s
+        """, (pet_id,))
+
+        # Reject other pending requests for same pet
+        cursor.execute("""
+            UPDATE adoption_requests
+            SET status='Rejected'
+            WHERE pet_id=%s AND id!=%s
+        """, (pet_id, request_id))
+
+        db.commit()
+
+    cursor.close()
+    db.close()
+
+    flash("Pet marked as Adopted!", "success")
+    return redirect(url_for('owner_dashboard'))
+
+
+@app.route('/reject_request/<int:request_id>')
+def reject_request(request_id):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE adoption_requests
+        SET status='Rejected'
+        WHERE id=%s
+    """, (request_id,))
+
+    db.commit()
+    cursor.close()
+    db.close()
+
+    flash("Request Rejected.", "warning")
+    return redirect(url_for('owner_dashboard'))
 
 # ------------------- REPORT ABUSE PAGE ---------------------------------------------
 
@@ -361,7 +541,7 @@ def ask_gemini_petcare(prompt):
     return data["candidates"][0]["content"]["parts"][0]["text"]
 
 #-------------------PET MATCH PAGE---------------------------------------------------
-@app.route("/pet-match", methods=["GET", "POST"])
+'''@app.route("/pet-match", methods=["GET", "POST"])
 def pet_match():
     if request.method == "POST":
         home = request.form.get("home")
@@ -454,6 +634,62 @@ Breed:
             status=status
         )
 
+    return render_template("pet_match.html")'''
+#-------------------PET MATCH PAGE---------------------------------------------------
+@app.route("/pet-match", methods=["GET", "POST"])
+def pet_match():
+
+    if request.method == "POST":
+
+        home = request.form.get("home")
+        experience = request.form.get("experience")
+        time = request.form.get("time")
+        activity = request.form.get("activity_level")
+        grooming = request.form.get("grooming")
+        other_pets = request.form.get("other_pets")
+
+        import pandas as pd
+
+        input_df = pd.DataFrame([{
+            "home": home,
+            "experience": experience,
+            "time": time,
+            "activity_level": activity,
+            "grooming": grooming,
+            "other_pets": other_pets
+        }])
+
+        prediction = model.predict(input_df)
+        pet_full = prediction[0]
+
+        parts = pet_full.split("_", 1)
+        pet_type = parts[0]
+        breed = parts[1] if len(parts) > 1 else "Unknown"
+
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT * FROM pets WHERE LOWER(type) LIKE %s",
+            ("%" + pet_type.lower() + "%",)
+        )
+
+        pets = cursor.fetchall()
+        breeds = set(p["breed"].lower() for p in pets)
+        cursor.close()
+        db.close()
+
+        status = "Available" if pets and breed.lower() in breeds else "Currently Unavailable"
+
+        return render_template(
+            "pet_match_result.html",
+            pet_type=pet_type,
+            breed=breed,
+            pets=pets,
+            status=status
+        )
+
+    # ✅ THIS FIXES YOUR ERROR
     return render_template("pet_match.html")
 
 # ---------------- PAW-GRAM (SOCIAL FEED) --------------------------------------------------
@@ -617,9 +853,15 @@ def auth():
                 session.permanent = remember
                 session["user_id"] = user["id"]
                 session["name"] = user["name"]
+                session["role"] = user["role"]
                 cursor.close()
                 db.close()
-                return redirect(url_for("paw_gram"))
+                next_page = request.args.get("next")
+                if next_page:
+                        return redirect(next_page)
+
+                return redirect(url_for("home"))
+                #return redirect(url_for("paw_gram"))
             else:
                 error = "Invalid email or password."
 
@@ -855,7 +1097,7 @@ def delete_post(post_id):
     if os.path.exists(image_path):
         os.remove(image_path)
 
-    # delete likes + comments first (IMPORTANT)
+    # delete likes + comments first 
     cursor.execute("DELETE FROM paw_likes WHERE post_id=%s", (post_id,))
     cursor.execute("DELETE FROM paw_comments WHERE post_id=%s", (post_id,))
     cursor.execute("DELETE FROM paw_posts WHERE id=%s", (post_id,))
@@ -1060,6 +1302,8 @@ def get_health_services():
     services = vets + pharmacies
 
     return jsonify({"services": services})
+
+
 
 # -------- RUN SERVER --------
 if __name__ == '__main__':
