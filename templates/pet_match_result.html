@@ -1,150 +1,195 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Pet Match Result</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            background: #f9f9f9;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<meta charset="UTF-8">
+<title>Pet Match Result</title>
 
-        .result-card {
-            background: white;
-            width: 520px;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        }
+<style>
 
-        .icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-        }
+body{
+    margin:0;
+    font-family:"Segoe UI", Tahoma, sans-serif;
+    background:#f9f9f9;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+}
 
-        h1 {
-            color: #2c3e50;
-        }
+/* NAVBAR */
+.navbar{
+    background:white;
+    padding:15px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
 
-        p {
-            font-size: 18px;
-            color: #555;
-            margin: 10px 0;
-        }
+.logo{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+}
 
-        .highlight-box {
-            background: #f1f8ff;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            color: #2980b9;
-            margin: 15px 0;
-            font-size: 20px;
-        }
+.back{
+    text-decoration:none;
+    color:#ff7a00;
+    font-weight:500;
+}
 
-        .status-available {
-            color: #27ae60;
-            font-weight: bold;
-        }
+/* CENTER AREA */
+.container{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-        .status-unavailable {
-            color: #e74c3c;
-            font-weight: bold;
-        }
+/* RESULT CARD */
+.result-card{
+    background:white;
+    width:520px;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+}
 
-        ul {
-            text-align: left;
-            padding-left: 20px;
-            margin-top: 15px;
-        }
+.icon{
+    font-size:60px;
+    margin-bottom:10px;
+}
 
-        li {
-            margin-bottom: 8px;
-        }
+h1{
+    color:#2c3e50;
+}
 
-        .buttons {
-            margin-top: 25px;
-        }
+p{
+    font-size:18px;
+    color:#555;
+    margin:10px 0;
+}
 
-        a {
-            text-decoration: none;
-            padding: 12px 22px;
-            border-radius: 8px;
-            margin: 5px;
-            display: inline-block;
-            font-weight: 600;
-        }
+.highlight-box{
+    background:#f1f8ff;
+    padding:15px;
+    border-radius:10px;
+    font-weight:bold;
+    color:#2980b9;
+    margin:15px 0;
+    font-size:20px;
+}
 
-        .home-btn {
-            background: #27ae60;
-            color: white;
-        }
+.status-available{
+    color:#27ae60;
+    font-weight:bold;
+}
 
-        .adopt-btn {
-            background: #3498db;
-            color: white;
-        }
+.status-unavailable{
+    color:#2c3e50;
+    font-weight:bold;
+}
 
-        a:hover {
-            opacity: 0.9;
-        }
-    </style>
+ul{
+    text-align:left;
+    padding-left:20px;
+    margin-top:15px;
+}
+
+li{
+    margin-bottom:8px;
+}
+
+.buttons{
+    margin-top:25px;
+}
+
+a{
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:8px;
+    margin:5px;
+    display:inline-block;
+    font-weight:600;
+}
+
+
+
+.adopt-btn{
+    background:#ff7a00;
+    color:white;
+}
+
+a:hover{
+    opacity:0.9;
+}
+
+</style>
 </head>
+
 <body>
 
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">FurrEver 🐾</div>
+    <a class="back" href="/">← Back to Home</a>
+</div>
+
+<!-- CENTER CONTENT -->
+<div class="container">
+
 <div class="result-card">
-    <div class="icon">🐾</div>
 
-    <h1>Your Perfect Pet Match</h1>
+<div class="icon">🐾</div>
 
-    <p>Based on your lifestyle and preferences, we recommend:</p>
+<h1>Your Perfect Pet Match</h1>
 
-    <div class="highlight-box">
-        Pet Type: {{ pet_type }} <br>
-        Breed: {{ breed }}
-    </div>
+<p>Based on your lifestyle and preferences, we recommend:</p>
 
-    {% if status == "Available" %}
-        <p class="status-available">✔ {{ status }}</p>
+<div class="highlight-box">
+Pet Type: {{ pet_type }} <br>
+Breed: {{ breed }}
+</div>
 
-        <h3>Available {{ pet_type }} - {{ breed }} for Adoption</h3>
+{% if status == "Available" %}
 
-        <ul>
-            {% for pet in pets %}
-                <li>
-                    <strong>{{ pet.name }}</strong> –
-                    {{ pet.age }} years –
-                    {{ pet.type }} –
-                    {{ pet.breed }}
-                </li>
-            {% endfor %}
-        </ul>
+<p class="status-available">✔ {{ status }}</p>
 
-    {% elif status == "Currently Unavailable" %}
-        <p class="status-unavailable">
-            ✖ Currently not available in our database.
-        </p>
+<h3>Available {{ pet_type }} - {{ breed }} for Adoption</h3>
 
-    {% else %}
-        <p class="status-unavailable">
-            ⚠ {{ status }}
-        </p>
-    {% endif %}
+<ul>
+{% for pet in pets %}
+<li>
+<strong>{{ pet.name }}</strong> –
+{{ pet.age }} years –
+{{ pet.type }} –
+{{ pet.breed }}
+</li>
+{% endfor %}
+</ul>
 
-    <div class="buttons">
-        <a href="/adopt?type={{ pet_type }}&breed={{ breed }}" class="adopt-btn">
-            View Available Pets
-        </a>
-        <a href="/" class="home-btn">Back to Home</a>
-    </div>
+{% elif status == "Currently Unavailable" %}
+
+<p class="status-unavailable">
+✖ Currently not available in our database.
+</p>
+
+{% else %}
+
+<p class="status-unavailable">
+⚠ {{ status }}
+</p>
+
+{% endif %}
+
+<div class="buttons">
+<a href="/adopt?type={{ pet_type }}&breed={{ breed }}" class="adopt-btn">
+View Available Pets
+</a>
+
+</div>
+
+</div>
 </div>
 
 </body>

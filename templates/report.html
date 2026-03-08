@@ -16,8 +16,9 @@
         }
 
         .page-header {
-            background: linear-gradient(#ff7a00,#db6b02);
-            color: white;
+            background:linear-gradient(#eef4ff,#f4f6f8);
+            /*background: linear-gradient(#ff7a00,#db6b02);*/
+            color: #333;
             padding: 40px 20px;
             text-align: center;
         }
@@ -87,11 +88,35 @@
             margin-top: 15px;
             text-align: center;
         }
+              .navbar{
+    background:white;
+    padding:15px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+}
+
+.back{
+    text-decoration:none;
+    color:#ff7a00;
+    font-weight:500;
+}
+
     </style>
 </head>
 
 <body>
-
+<div class="navbar">
+    <div class="logo">FurrEver 🐾</div>
+    <a class="back" href="/">← Back to Home</a>
+</div>
 <div class="page-header">
     <h1>Report Animal Abuse</h1>
     <p>Your voice can protect animals from harm</p>

@@ -1,117 +1,161 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Pet Matching</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            /*background: linear-gradient(to right, #fcba7c, #f2d184,#f2ba85);*/
-            background: #f9f9f9;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<meta charset="UTF-8">
+<title>AI Pet Matching</title>
 
-        .card {
-            background: white;
-            padding: 30px;
-            width: 400px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-        }
+<style>
 
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-        }
+body{
+    font-family: Arial, sans-serif;
+    background:#f9f9f9;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+}
 
-        label {
-            font-weight: bold;
-            margin-top: 15px;
-            display: block;
-        }
+/* NAVBAR */
+.navbar{
+    background:white;
+    padding:15px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
 
-        select, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
+.logo{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+}
 
-        button {
-            background: #f18a29;
-            color: white;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            border: none;
-        }
+.back{
+    text-decoration:none;
+    color:#ff7a00;
+    font-weight:500;
+}
 
-        button:hover {
-            background: #ff7a00;
-        }
-    </style>
+/* CENTER AREA */
+.container{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* FORM CARD */
+.card{
+    background:white;
+    padding:30px;
+    width:400px;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.25);
+}
+
+h2{
+    text-align:center;
+    color:#2c3e50;
+}
+
+/* FORM ELEMENTS */
+
+label{
+    font-weight:bold;
+    margin-top:15px;
+    display:block;
+}
+
+select,button{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#f18a29;
+    color:white;
+    font-size:16px;
+    margin-top:20px;
+    cursor:pointer;
+    border:none;
+}
+
+button:hover{
+    background:#ff7a00;
+}
+
+</style>
 </head>
+
 <body>
 
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">FurrEver 🐾</div>
+    <a class="back" href="/">← Back to Home</a>
+</div>
+
+<!-- CENTER CONTENT -->
+<div class="container">
+
 <div class="card">
-    <h2>Find Your Best Pet Match 🐾</h2>
 
-    <!-- FORM START -->
-    <form method="POST" action="/pet-match">
+<h2>Find Your Best Pet Match 🐾</h2>
 
-       <label>Type of Home:</label>
+<form method="POST" action="/pet-match">
+
+<label>Type of Home:</label>
 <select name="home" required>
-    <option value="Apartment">Apartment</option>
-    <option value="Independent House">Independent House</option>
-    <option value="Farm / Large Property">Farm / Large Property</option>
+<option value="Apartment">Apartment</option>
+<option value="Independent House">Independent House</option>
+<option value="Farm / Large Property">Farm / Large Property</option>
 </select>
 
-        <label>Pet Experience</label>
-        <select name="experience" required>
-            <option value="">Select</option>
-            <option value="beginner">Beginner</option>
-            <option value="experienced">Experienced</option>
-        </select>
+<label>Pet Experience</label>
+<select name="experience" required>
+<option value="">Select</option>
+<option value="beginner">Beginner</option>
+<option value="experienced">Experienced</option>
+</select>
 
-        <label>Time Available for Pet</label>
-        <select name="time" required>
-            <option value="">Select</option>
-            <option value="low">Low</option>
-            <option value="high">High</option>
-        </select>
+<label>Time Available for Pet</label>
+<select name="time" required>
+<option value="">Select</option>
+<option value="low">Low</option>
+<option value="high">High</option>
+</select>
 
-        <label>Preferred Activity Level:</label>
+<label>Preferred Activity Level:</label>
 <select name="activity_level">
-    <option value="Low">Low (Calm pet)</option>
-    <option value="Medium">Medium</option>
-    <option value="High">High (Very active pet)</option>
+<option value="Low">Low (Calm pet)</option>
+<option value="Medium">Medium</option>
+<option value="High">High (Very active pet)</option>
 </select>
 
 <label>How much grooming can you manage?</label>
 <select name="grooming">
-    <option value="Low">Low maintenance</option>
-    <option value="Moderate">Moderate</option>
-    <option value="High">High grooming okay</option>
+<option value="Low">Low maintenance</option>
+<option value="Moderate">Moderate</option>
+<option value="High">High grooming okay</option>
 </select>
 
 <label>Do you already have pets?</label>
 <select name="other_pets">
-    <option value="No">No</option>
-    <option value="Yes - Dog">Yes - Dog</option>
-    <option value="Yes - Cat">Yes - Cat</option>
-    <option value="Yes - Other">Yes - Other</option>
+<option value="No">No</option>
+<option value="Yes - Dog">Yes - Dog</option>
+<option value="Yes - Cat">Yes - Cat</option>
+<option value="Yes - Other">Yes - Other</option>
 </select>
-        <!-- IMPORTANT -->
-        <button type="submit">Find Best Match</button>
 
-    </form>
-    <!-- FORM END -->
+<button type="submit">Find Best Match</button>
+
+</form>
+
+</div>
 </div>
 
 </body>

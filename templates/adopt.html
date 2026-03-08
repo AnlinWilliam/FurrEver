@@ -24,6 +24,26 @@ body{
     background:var(--bg);
     color:var(--text-dark);
 }
+.navbar{
+    background:white;
+    padding:15px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+}
+
+.back{
+    text-decoration:none;
+    color:#ff7a00;
+    font-weight:500;
+}
 
 /* CONTAINER */
 .container{
@@ -187,14 +207,19 @@ h1{
   background: #45a049;
 }
 
-/* HEADER WITH RIGHT BUTTON */
+/* HEADER WITH RIGHT BUTTON 
 .page-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin-bottom:50px;
+}*/
+.page-header{
+    display:flex;
+    flex-direction:column;   /* add this */
+    align-items:center;      /* keeps it centered */
+    margin-bottom:40px;
 }
-
 .page-header h1{
     margin:0;
     font-size:30px;
@@ -215,6 +240,14 @@ h1{
 .home-btn:hover{
     background:#ff6500;
 }
+.info-text{
+    text-align:center;
+    max-width:750px;
+    margin:10px auto 40px auto;
+    font-size:15px;
+    color:var(--text-light);
+    line-height:1.6;
+}
 
 
 </style>
@@ -226,12 +259,19 @@ h1{
 
 </head>
 <body>
-
+<div class="navbar">
+    <div class="logo">FurrEver 🐾</div>
+    <a class="back" href="/">← Back to Home</a>
+</div>
 <div class="container">
     <!--h1>Pets Available for Adoption 🐾</h1>-->
     <div class="page-header">
     <h1>Pets Available for Adoption 🐾</h1>
-    <a href="{{ url_for('home') }}" class="home-btn">Back to Home</a>
+    <div class="info-text">
+    <p>Browse pets currently available for adoption. If you don't find the perfect match here, 
+        scroll down to search for nearby animal shelters in your city where you can explore more pets waiting for a loving home.</p> 
+    </div>
+    
 </div>
 
     <div class="pet-grid">

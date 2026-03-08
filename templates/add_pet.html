@@ -105,11 +105,36 @@
         .back-link a:hover {
             text-decoration: underline;
         }
+
+              .navbar{
+    background:white;
+    padding:15px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+}
+
+.back{
+    text-decoration:none;
+    color:#ff7a00;
+    font-weight:500;
+}
+
     </style>
 </head>
 
 <body>
-
+<div class="navbar">
+    <div class="logo">FurrEver 🐾</div>
+    <a class="back" href="/">← Back to Home</a>
+</div>
 <div class="container">
     <div class="form-card">
         <h2>Add Pet for Adoption</h2>
@@ -159,13 +184,8 @@
                 <option>No</option>
             </select>
 
-            <!--<label>Sterilized / Neutered</label>
-            <select name="sterilized" required>
-                <option value="">Select</option>
-                <option>Yes</option>
-                <option>No</option>
-            </select>
-        -->
+           
+        
             <!-- Owner / Shelter Contact -->
             <div class="section-title">🧑 Owner / Shelter Contact</div>
 
@@ -184,9 +204,7 @@
             <button type="submit">Add Pet</button>
         </form>
 
-        <div class="back-link">
-            <a href="/">← Back to Home</a>
-        </div>
+        
     </div>
 </div>
 

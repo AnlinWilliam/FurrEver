@@ -70,7 +70,7 @@ body{
 }
 
 .user{
-    background:#4f6df5;
+    background:#ff7a00;
     color:white;
     align-self:flex-end;
 }
@@ -96,10 +96,16 @@ body{
     height:48px;
     border-radius:50%;
     border:none;
-    background:#4f6df5;
+    background:#ff7a00;
     color:white;
     font-size:20px;
     cursor:pointer;
+}
+.back{
+    text-decoration:none;
+    color:#ff7a00;
+    font-weight:500;
+    margin-left: 1150px;
 }
 </style>
 </head>
@@ -111,8 +117,9 @@ body{
     <!-- Header -->
     <div class="chat-header">
         <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png">
-        <h2>PawCare Bot</h2>
-        <a href="/" style="margin-left: auto; text-decoration: none; background: #ff7a00; color: white; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Back</a>
+        <h2>FurrEver Bot</h2>
+        <!--a href="/" style="margin-left: auto; text-decoration: none; background: #ff7a00; color: white; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Back</a>-->
+         <a class="back" href="/">← Back to Home</a>
     </div>
 
     <!-- Messages -->
@@ -179,6 +186,15 @@ function sendMessage() {
         console.error(err);
     });
 }
+
+const input = document.getElementById("user-input");
+
+input.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // prevents page refresh
+        sendMessage();
+    }
+});
 </script>
 
 </body>

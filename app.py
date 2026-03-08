@@ -297,9 +297,7 @@ def owner_dashboard():
     """, (owner_id,))
     sent_requests = cursor.fetchall()
 
-    print("Logged owner:", owner_id)
-    print("Requests:", requests)
-    print("Sent Requests:", sent_requests)
+    
     cursor.close()
     db.close()
 
