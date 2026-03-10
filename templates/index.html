@@ -125,8 +125,10 @@
         <a href="/adopt">Adopt</a>
         <a href="/add-pet">Add Pet</a>
         <a href="/paw-gram">Paw-Gram</a>
+       
         {% if session.get('user_id') %}
             <a href="{{ url_for('owner_dashboard') }}">Dashboard</a>
+             <span style="margin-left:20px;color: #444;font-weight: 500;">Hi {{ session.get("name") }}</span>
             <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
             <a href="{{ url_for('auth') }}">Login</a>

@@ -838,7 +838,7 @@ def auth():
                 session["name"] = name
                 cursor.close()
                 db.close()
-                return redirect(url_for("paw_gram"))
+                return redirect(url_for("home"))
 
         elif action == "login":
             #remember = request.form.get("remember")
