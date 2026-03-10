@@ -5,9 +5,7 @@
 <title>Owner Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -17,51 +15,64 @@ font-family:Poppins;
 
 body{
 display:flex;
-background: #f9f9f9;
+background:#f3f4f7;
 }
 
 /* Sidebar */
 
 .sidebar{
-width:220px;
-background:white;
+width:230px;
+background:#1e1e2d;
 height:100vh;
 padding:30px 20px;
-box-shadow:0 0 10px rgba(0,0,0,0.05);
 position:fixed;
 left:0;
 top:0;
-}
-.main{
-flex:1;
-padding:30px;
-margin-left:220px;
+color:white;
 }
 
 .sidebar h2{
-margin-bottom:30px;
+margin-bottom:35px;
+color:#ff8c2a;
 }
 
 .sidebar a{
 display:block;
-margin:15px 0;
+padding:10px 12px;
+margin:8px 0;
 text-decoration:none;
-color:#555;
-font-weight:500;
+color:#bfc3d4;
+border-radius:6px;
+font-size:14px;
+transition:0.2s;
+}
+
+.sidebar a:hover{
+background:#2a2a40;
+color:white;
 }
 
 /* Main area */
 
 .main{
 flex:1;
-padding:30px;
+padding:35px;
+margin-left:230px;
 }
+
+/* Header */
 
 .header{
 display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:30px;
+}
+
+.header h2{
+font-size:22px;
+font-weight:600;
+color:#333;
 }
 
 /* Cards */
@@ -74,24 +85,23 @@ margin-bottom:40px;
 
 .card{
 flex:1;
-padding:20px;
-border-radius:10px;
-color:white;
+background:white;
+padding:22px;
+border-radius:12px;
+box-shadow:0 3px 10px rgba(0,0,0,0.06);
+color:#333;
 }
 
-.card1{background:#f58b27;}
-.card2{background:#f58b27;}
-.card3{background:#f58b27;}
-.card4{background:#f58b27;}
-
 .card h3{
-font-size:16px;
-margin-bottom:10px;
+font-size:14px;
+color:#888;
+margin-bottom:8px;
 }
 
 .card p{
-font-size:24px;
+font-size:26px;
 font-weight:600;
+color:#222;
 }
 
 /* Sections */
@@ -100,34 +110,48 @@ font-weight:600;
 margin-bottom:40px;
 }
 
+.section h2{
+margin-bottom:15px;
+font-size:18px;
+color:#333;
+}
+
+/* Boxes */
+
 .pet-box,
 .request-box{
 background:white;
-padding:15px;
-margin-bottom:15px;
-border-radius:8px;
-box-shadow:0 0 8px rgba(0,0,0,0.05);
+padding:18px;
+margin-bottom:12px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
 }
 
+/* Buttons */
+
 .btn{
-padding:4px 12px;
-border-radius:4px;
+padding:6px 14px;
+border-radius:6px;
 text-decoration:none;
-font-size:14px;
+font-size:13px;
+font-weight:500;
+display:inline-block;
+margin-top:8px;
 }
-.btn.approve {
-    margin-right: 9px; /* adds space to the right of the approve button */
+
+.btn.approve{
+margin-right:8px;
 }
+
 .approve{
-background:#6eb771;
+background:#4CAF50;
 color:white;
 }
 
 .reject{
-background:#f85e53;
+background:#e74c3c;
 color:white;
 }
-
 </style>
 </head>
 
