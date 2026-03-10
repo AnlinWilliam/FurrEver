@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Find Animal Breed</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f2f4f8;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    padding:40px;
+    border-radius:12px;
+    width:450px;
+    text-align:center;
+    box-shadow:0 6px 20px rgba(0,0,0,0.1);
+}
+
+h2{
+    margin-bottom:10px;
+    color:#333;
+}
+
+p{
+    color:#777;
+    font-size:14px;
+}
+
+.upload-area{
+    border:2px dashed #bbb;
+    border-radius:10px;
+    padding:40px;
+    margin-top:20px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.upload-area:hover{
+    border-color:#007BFF;
+}
+
+.upload-area input{
+    display:none;
+}
+
+.preview img{
+    width:220px;
+    margin-top:20px;
+    border-radius:8px;
+}
+
+.predict-btn{
+    margin-top:20px;
+    padding:10px 25px;
+    border:none;
+    background:#007BFF;
+    color:white;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.predict-btn:hover{
+    background:#0056b3;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Upload Image & Detect Breed</h2>
+<p>Select an animal image to identify its breed.</p>
+
+<form action="/predict_breed" method="post" enctype="multipart/form-data">
+
+<label class="upload-area">
+    🐾 Click or Drag Image Here
+    <input type="file" name="image" accept="image/*" required onchange="previewImage(event)">
+</label>
+
+<div class="preview" id="preview"></div>
+
+<button class="predict-btn">Predict Breed</button>
+
+</form>
+
+</div>
+
+<script>
+
+function previewImage(event){
+
+    const preview = document.getElementById("preview");
+    preview.innerHTML = "";
+
+    const file = event.target.files[0];
+
+    if(file){
+        const fileName = document.createElement("p");
+        fileName.innerText = "Selected file: " + file.name;
+        fileName.style.marginTop = "15px";
+        fileName.style.color = "#333";
+        fileName.style.fontWeight = "bold";
+
+        preview.appendChild(fileName);
+    }
+
+}
+
+</script>
+
+</body>
+</html>

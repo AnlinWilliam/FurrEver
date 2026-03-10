@@ -632,6 +632,28 @@ Breed:
         )
 
     return render_template("pet_match.html")'''
+
+#-----------------------------breed detector page--------------------------------
+@app.route("/breed_detector")
+def breed_detector():
+    return render_template("breed_detector.html")
+
+
+@app.route("/predict_breed", methods=["POST"])
+def predict_breed():
+
+    file = request.files["image"]
+    path = "static/uploads/" + file.filename
+    file.save(path)
+
+    # Temporary prediction (until ML model is added)
+    breed = "Labrador Retriever"
+
+    return render_template("img_result.html",
+                           breed=breed,
+                           image_path=path)
+
+
 #-------------------PET MATCH PAGE---------------------------------------------------
 @app.route("/pet-match", methods=["GET", "POST"])
 def pet_match():
