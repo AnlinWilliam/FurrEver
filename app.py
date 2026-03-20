@@ -13,8 +13,20 @@ from dotenv import load_dotenv
 import smtplib
 import numpy as np
 
-
 import joblib
+
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import load_model
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+import numpy as np
+breed_model = load_model(
+    "ml_model/pet_breed_model_3.keras",
+    custom_objects={"preprocess_input": preprocess_input}
+)
+class_names=['Abyssinian', 'Bengal', 'Birman', 'Bombay', 'British_Shorthair', 'Egyptian_Mau', 'Maine_Coon', 'Persian', 'Ragdoll', 'Russian_Blue', 'Siamese', 'Sphynx', 'american_bulldog', 'american_pit_bull_terrier', 'basset_hound', 'beagle', 'boxer', 'chihuahua', 'english_cocker_spaniel', 'english_setter', 'german_shorthaired', 'great_pyrenees', 'havanese', 'japanese_chin', 'keeshond', 'leonberger', 'miniature_pinscher', 'newfoundland', 'pomeranian', 'pug', 'saint_bernard', 'samoyed', 'scottish_terrier', 'shiba_inu', 'staffordshire_bull_terrier', 'wheaten_terrier', 'yorkshire_terrier']
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "ml_model", "pet_model.pkl")
@@ -638,7 +650,7 @@ Breed:
 def breed_detector():
     return render_template("breed_detector.html")
 
-
+'''
 @app.route("/predict_breed", methods=["POST"])
 def predict_breed():
 
@@ -652,7 +664,38 @@ def predict_breed():
     return render_template("img_result.html",
                            breed=breed,
                            image_path=path)
+'''
+@app.route("/predict_breed", methods=["POST"])
+def predict_breed():
 
+    file = request.files["image"]
+    path = "static/uploads/" + file.filename
+    file.save(path)
+
+    # Load and prepare image
+    
+    img = image.load_img(path, target_size=(224,224))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    #img_array = img_array / 255.0
+
+    # Predict breed
+    prediction = breed_model.predict(img_array)
+
+    predicted_index = np.argmax(prediction)
+    confidence = float(np.max(prediction))
+    if confidence < 0.5:
+        predicted_class = "No clear pet detected"
+    else:
+        predicted_class = class_names[predicted_index]
+
+    print("Predicted index:", predicted_index)
+    print("Predicted class:", predicted_class)
+    print("Confidence:", confidence)
+    return render_template("img_result.html",
+                           breed=predicted_class,
+                           confidence=confidence,
+                           image_path=path)
 
 #-------------------PET MATCH PAGE---------------------------------------------------
 @app.route("/pet-match", methods=["GET", "POST"])
