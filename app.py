@@ -684,7 +684,7 @@ def predict_breed():
                            confidence=confidence,
                            image_path=path)
 
-'''-------apt for pet_breed_model_4-----------------
+'''-------apt for pet_breed_model_4-------------------
 @app.route("/predict_breed", methods=["POST"])
 def predict_breed():
 
