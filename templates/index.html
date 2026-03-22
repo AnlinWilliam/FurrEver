@@ -6,7 +6,7 @@
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -88,7 +88,12 @@
     color: #333;
     transition: 0.3s;
 }
-
+.username-btn{
+    font-family: 'Inter', sans-serif;  
+    font-size:16px;
+    font-weight:500;
+    color:#ff7a00; 
+}
 .dropbtn:hover {
     color: #ff7a00;
 }
@@ -274,7 +279,7 @@
                 <a href="/health-services">Pet Health Services</a>
                 <a href="{{ url_for('report_abuse') }}">Report Abuse</a>
                 <a href="/chatbot">Pet Chatbot</a>
-                <a href="/breed_detector">Upload Image & Find Breed</a>
+                <a href="/breed_detector">Find Your Breed</a>
             </div>
         </div>
 
@@ -288,8 +293,8 @@
 
         <!-- User Dropdown -->
         <div class="dropdown">
-            <button class="dropbtn" onclick="toggleDropdown(event)">
-                Hi {{ session.get("name") }} ▾
+            <button class="dropbtn username-btn" onclick="toggleDropdown(event)">
+                Hi, {{ session.get("name") }} ▾
             </button>
 
             <div class="dropdown-content">
@@ -366,7 +371,11 @@
             <p>Find nearby veterinary clinics and pet pharmacies.</p>
             <a href="/health-services">Explore</a>
         </div>
-
+        <div class="card">
+            <h3>Find Your Breed</h3>
+            <p>Upload an image and discover your pet's breed.</p>
+            <a href="/breed_detector">Find Breed</a>
+        </div>
 
     </div>
 </div>
