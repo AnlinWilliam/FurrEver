@@ -25,6 +25,8 @@ breed_model = load_model(
     "ml_model/pet_breed_model_3.keras",
     custom_objects={"preprocess_input": preprocess_input}
 )
+#breed_model = load_model("ml_model/pet_breed_model_4.keras")
+
 class_names=['Abyssinian', 'Bengal', 'Birman', 'Bombay', 'British_Shorthair', 'Egyptian_Mau', 'Maine_Coon', 'Persian', 'Ragdoll', 'Russian_Blue', 'Siamese', 'Sphynx', 'american_bulldog', 'american_pit_bull_terrier', 'basset_hound', 'beagle', 'boxer', 'chihuahua', 'english_cocker_spaniel', 'english_setter', 'german_shorthaired', 'great_pyrenees', 'havanese', 'japanese_chin', 'keeshond', 'leonberger', 'miniature_pinscher', 'newfoundland', 'pomeranian', 'pug', 'saint_bernard', 'samoyed', 'scottish_terrier', 'shiba_inu', 'staffordshire_bull_terrier', 'wheaten_terrier', 'yorkshire_terrier']
 
 
@@ -650,21 +652,6 @@ Breed:
 def breed_detector():
     return render_template("breed_detector.html")
 
-'''
-@app.route("/predict_breed", methods=["POST"])
-def predict_breed():
-
-    file = request.files["image"]
-    path = "static/uploads/" + file.filename
-    file.save(path)
-
-    # Temporary prediction (until ML model is added)
-    breed = "Labrador Retriever"
-
-    return render_template("img_result.html",
-                           breed=breed,
-                           image_path=path)
-'''
 @app.route("/predict_breed", methods=["POST"])
 def predict_breed():
 
@@ -697,6 +684,32 @@ def predict_breed():
                            confidence=confidence,
                            image_path=path)
 
+'''-------apt for pet_breed_model_4-----------------
+@app.route("/predict_breed", methods=["POST"])
+def predict_breed():
+
+    file = request.files["image"]
+    path = "static/uploads/" + file.filename
+    file.save(path)
+
+    # Load image
+    img = image.load_img(path, target_size=(224,224))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+
+
+    # Predict
+    prediction = breed_model.predict(img_array)
+
+    predicted_index = np.argmax(prediction)
+    predicted_class = class_names[predicted_index]
+
+    print("Predicted:", predicted_class)
+
+    return render_template("img_result.html",
+                           breed=predicted_class,
+                           image_path=path)
+'''
 #-------------------PET MATCH PAGE---------------------------------------------------
 @app.route("/pet-match", methods=["GET", "POST"])
 def pet_match():
