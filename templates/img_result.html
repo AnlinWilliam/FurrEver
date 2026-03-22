@@ -1,77 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Breed Detection Result</title>
+<title>Detection Result</title>
 
-    <style>
+<style>
 
-        body{
-            font-family: Arial, sans-serif;
-            background:#f4f6f9;
-            text-align:center;
-            padding:40px;
-        }
+body{
+    margin:0;
+    font-family:'Inter', Arial, sans-serif;
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
 
-        .result-card{
-            background:white;
-            padding:30px;
-            border-radius:10px;
-            width:400px;
-            margin:auto;
-            box-shadow:0px 4px 15px rgba(0,0,0,0.1);
-        }
+/* CARD */
+.result-card{
+    width:650px;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    overflow:hidden;
+}
 
-        img{
-            width:250px;
-            border-radius:10px;
-            margin-top:15px;
-        }
+/* TOP BAR */
+.top-bar{
+    height:5px;
+    background:#ff7a00;
+}
 
-        h2{
-            color:#333;
-        }
+/* CONTENT */
+.content{
+    padding:30px;
+}
 
-        .breed{
-            font-size:22px;
-            color:#4CAF50;
-            font-weight:bold;
-            margin-top:10px;
-        }
+/* HEADER */
+h2{
+    margin:0;
+    font-size:22px;
+    color:#111;
+}
 
-        .btn{
-            display:inline-block;
-            margin-top:20px;
-            padding:10px 20px;
-            background:#2196F3;
-            color:white;
-            text-decoration:none;
-            border-radius:6px;
-        }
+.subtitle{
+    font-size:14px;
+    color:#666;
+    margin-top:5px;
+    margin-bottom:25px;
+}
 
-        .btn:hover{
-            background:#1976D2;
-        }
+/* IMAGE */
+.image-box{
+    text-align:center;
+}
 
-    </style>
+.image-box img{
+    width:280px;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* RESULT BOX */
+.result{
+    margin-top:25px;
+    padding:18px;
+    border-radius:8px;
+    background:#fff4ec;
+    border:1px solid #ffd2b3;
+    text-align:center;
+}
+
+.result-label{
+    font-size:13px;
+    color:#666;
+}
+
+.breed{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+    margin-top:5px;
+}
+
+/* BUTTON */
+.btn{
+    display:block;
+    width:100%;
+    margin-top:25px;
+    padding:12px;
+    background:#ff7a00;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    font-size:14px;
+    text-align:center;
+    transition:0.2s;
+}
+
+.btn:hover{
+    background:#e56700;
+}
+
+/* OPTIONAL SECOND BUTTON STYLE */
+.btn-secondary{
+    margin-top:10px;
+    background:#eee;
+    color:#333;
+}
+
+.btn-secondary:hover{
+    background:#ddd;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="result-card">
 
-    <h2>Breed Detection Result</h2>
+<div class="top-bar"></div>
 
-    <p>Your uploaded image:</p>
+<div class="content">
 
-    <img src="{{ image_path }}" alt="Uploaded Animal">
+    <h2>Detection Result</h2>
+    <p class="subtitle">Here is the predicted breed for your uploaded image</p>
 
-    <p class="breed">Predicted Breed: {{ breed }}</p>
+    <div class="image-box">
+        <img src="{{ image_path }}" alt="Uploaded Animal">
+    </div>
 
-    <!--<p class="confidence">
-        Confidence: {{ (confidence * 100) | round(2) }}%
-    </p>-->
+    <div class="result">
+        <div class="result-label">Predicted Breed</div>
+        <div class="breed">{{ breed }}</div>
+    </div>
 
     <a href="/breed_detector" class="btn">Try Another Image</a>
+
+</div>
 
 </div>
 

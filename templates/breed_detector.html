@@ -1,75 +1,159 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Find Animal Breed</title>
+<title>Animal Breed Detection</title>
 
 <style>
 
 body{
     margin:0;
-    font-family: Arial, sans-serif;
-    background:#f2f4f8;
+    font-family:'Inter', Arial, sans-serif;
+    height:100vh;
+    display:flex;
+}
+
+/* LEFT */
+.left{
+    width:25%;
+    background:#ff7a00;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:40px;
+}
+
+.left h1{
+    font-size:26px;
+    margin-bottom:10px;
+}
+
+.left p{
+    font-size:14px;
+    opacity:0.9;
+}
+
+/* RIGHT */
+.right{
+    width:75%;
+    background:#f6f7f9;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
 }
 
+/* CARD */
 .container{
-    background:white;
-    padding:40px;
-    border-radius:12px;
-    width:450px;
-    text-align:center;
-    box-shadow:0 6px 20px rgba(0,0,0,0.1);
-}
-
-h2{
-    margin-bottom:10px;
-    color:#333;
-}
-
-p{
-    color:#777;
-    font-size:14px;
-}
-
-.upload-area{
-    border:2px dashed #bbb;
+    width:520px;
+    background:#fff;
     border-radius:10px;
-    padding:40px;
-    margin-top:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    overflow:hidden;
+}
+
+/* TOP BAR */
+.top-bar{
+    height:4px;
+    background:#ff7a00;
+}
+
+/* CONTENT */
+.content{
+    padding:35px;
+}
+
+/* HEADER */
+.content h2{
+    margin:0;
+    font-size:22px;
+    color:#111;
+}
+
+.content p{
+    font-size:14px;
+    color:#666;
+    margin:6px 0 25px;
+}
+
+/* LABEL */
+.label{
+    font-size:13px;
+    color:#444;
+    margin-bottom:8px;
+    display:block;
+    font-weight:500;
+}
+
+/* UPLOAD BOX */
+.upload-area{
+    border:1.5px dashed #dcdcdc;
+    border-radius:8px;
+    padding:28px;
+    text-align:center;
     cursor:pointer;
-    transition:0.3s;
+    background:#fafafa;
+    font-size:14px;
+    color:#555;
+    transition:all 0.2s ease;
 }
 
 .upload-area:hover{
-    border-color:#007BFF;
+    border-color:#ff7a00;
+    background:#fff;
 }
 
 .upload-area input{
     display:none;
 }
 
-.preview img{
-    width:220px;
-    margin-top:20px;
-    border-radius:8px;
+/* FILE CHIP */
+.file-box{
+    margin-top:12px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    background:#fff4ec;
+    border:1px solid #ffd2b3;
+    border-radius:6px;
+    font-size:13px;
+    color:#333;
 }
 
-.predict-btn{
-    margin-top:20px;
-    padding:10px 25px;
+/* REMOVE BUTTON */
+.remove-btn{
+    background:none;
     border:none;
-    background:#007BFF;
-    color:white;
-    border-radius:6px;
-    font-size:16px;
+    color:#ff7a00;
+    font-size:14px;
     cursor:pointer;
 }
 
+/* BUTTON */
+.predict-btn{
+    width:100%;
+    margin-top:25px;
+    padding:13px;
+    border:none;
+    border-radius:6px;
+    background:#ff7a00;
+    color:#fff;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+}
+
 .predict-btn:hover{
-    background:#0056b3;
+    background:#e56700;
+}
+
+/* NOTE */
+.note{
+    margin-top:15px;
+    font-size:12px;
+    color:#999;
+    text-align:center;
 }
 
 </style>
@@ -77,45 +161,74 @@ p{
 
 <body>
 
+<!-- LEFT -->
+<div class="left">
+    <h1>Animal Breed AI</h1>
+    <p>Upload an image and identify the breed instantly using AI.</p>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+
 <div class="container">
 
-<h2>Upload Image & Detect Breed</h2>
-<p>Select an animal image to identify its breed.</p>
+<div class="top-bar"></div>
+
+<div class="content">
+
+<h2>Upload Image</h2>
+<p>Select an image to begin detection</p>
 
 <form action="/predict_breed" method="post" enctype="multipart/form-data">
 
+<label class="label">Image File</label>
+
 <label class="upload-area">
-    🐾 Click or Drag Image Here
-    <input type="file" name="image" accept="image/*" required onchange="previewImage(event)">
+    Click to upload image
+    <input type="file" name="image" accept="image/*" required onchange="handleFile(event)">
 </label>
 
-<div class="preview" id="preview"></div>
+<!-- FILE CHIP -->
+<div id="fileBox" class="file-box" style="display:none;">
+    <span id="fileText"></span>
+    <button type="button" class="remove-btn" onclick="removeFile()">✕</button>
+</div>
 
 <button class="predict-btn">Predict Breed</button>
 
 </form>
 
+<div class="note">Supported formats: JPG, PNG</div>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
 
-function previewImage(event){
-
-    const preview = document.getElementById("preview");
-    preview.innerHTML = "";
-
+function handleFile(event){
     const file = event.target.files[0];
+    const box = document.getElementById("fileBox");
+    const text = document.getElementById("fileText");
 
     if(file){
-        const fileName = document.createElement("p");
-        fileName.innerText = "Selected file: " + file.name;
-        fileName.style.marginTop = "15px";
-        fileName.style.color = "#333";
-        fileName.style.fontWeight = "bold";
+        box.style.display = "inline-flex";
 
-        preview.appendChild(fileName);
+        // Trim long file names
+        text.innerText = file.name.length > 25 
+            ? file.name.substring(0, 25) + "..." 
+            : file.name;
     }
+}
 
+function removeFile(){
+    const input = document.querySelector('input[type="file"]');
+    const box = document.getElementById("fileBox");
+
+    input.value = "";
+    box.style.display = "none";
 }
 
 </script>
