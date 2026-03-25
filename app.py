@@ -184,24 +184,32 @@ def add_pet():
     return render_template('add_pet.html')
 
 # ----------------------- ADOPT PAGE ---------------------------------------
+from flask import request
+
 @app.route('/adopt')
 def adopt():
 
+    search = request.args.get('search')
+
     db = get_db()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM pets")
-    pets = cursor.fetchall()
-    cursor.close()
-    return render_template("adopt.html", pets=pets) 
-    pet_type = request.args.get('type')
 
-    if pet_type:
-        cursor.execute("SELECT * FROM pets WHERE type=%s", (pet_type,))
+    # 🔍 If user searched → filter
+    if search and search.strip() != "":
+        search_term = "%" + search.lower().strip() + "%"
+        cursor.execute("""
+            SELECT * FROM pets
+            WHERE LOWER(type) LIKE %s
+               OR LOWER(breed) LIKE %s
+        """, (search_term, search_term))
     else:
+        # 🐾 Default → show all pets
         cursor.execute("SELECT * FROM pets")
 
     pets = cursor.fetchall()
-    return render_template("adopt.html", pets=pets, pet_type=pet_type)
+    cursor.close()
+
+    return render_template("adopt.html", pets=pets, search=search)
 
 # -------------------- PET DETAILS PAGE ----------------------------------------
 
