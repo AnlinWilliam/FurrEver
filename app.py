@@ -1,6 +1,7 @@
 #http://127.0.0.1:5000/
 from flask import Flask, render_template, request, redirect,session, url_for
 import mysql.connector
+from urllib.parse import urlparse
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
@@ -117,17 +118,35 @@ os.makedirs(app.config["STORY_UPLOAD_FOLDER"], exist_ok=True)
 
 # -------- DATABASE CONNECTION --------
 
+# def get_db():
+#     return mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password = os.getenv("DB_PASSWORD"),
+#         database="pawcare_db",
+#         autocommit=True
+#     )
+
+# db=get_db()
+# cursor = db.cursor(dictionary=True)
+
+conn = mysql.connector.connect(
+    host=os.getenv("MYSQLHOST"),
+    user=os.getenv("MYSQLUSER"),
+    password=os.getenv("MYSQLPASSWORD"),
+    database=os.getenv("MYSQLDATABASE"),
+    port=int(os.getenv("MYSQLPORT"))
+)
+cursor = conn.cursor(dictionary=True)
 def get_db():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password = os.getenv("DB_PASSWORD"),
-        database="pawcare_db",
-        autocommit=True
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        database=os.getenv("MYSQLDATABASE"),
+        port=int(os.getenv("MYSQLPORT"))
     )
 
-db=get_db()
-cursor = db.cursor(dictionary=True)
 
 # -------- ---------HOME PAGE -----------------------------
 @app.route('/')
@@ -518,6 +537,7 @@ def admin_delete_abuse_report(report_id):
     db.close()
     flash("Abuse report deleted.", "success")
     return redirect(url_for("admin_abuse_reports"))
+
 
 # -------------------- ADMIN – MANAGE POSTS --------------------------------
 
