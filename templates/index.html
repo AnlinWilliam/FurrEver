@@ -94,6 +94,7 @@
     font-weight:500;
     color:#ff7a00; 
 }
+
 .dropbtn:hover {
     color: #ff7a00;
 }
@@ -218,54 +219,14 @@
     </style>
 </head>
 <body>
-
-<!-- NAVBAR 
-<div class="navbar">
-    <div class="logo">FurrEver 🐾</div>
-    <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/adopt">Adopt</a>
-        <a href="/add-pet">Add Pet</a>
-        <a href="/paw-gram">Paw-Gram</a>
-       
-        {% if session.get('user_id') %}
-            <a href="{{ url_for('owner_dashboard') }}">Dashboard</a>
-             <span style="margin-left:20px;color: #444;font-weight: 500;">Hi {{ session.get("name") }}</span>
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-            <a href="{{ url_for('auth') }}">Login</a>
-        {% endif %}
-        <-- Services Dropdown --
-        <div class="dropdown">
-    <button class="dropbtn" onclick="toggleDropdown(event)">Services ▾</button>
-    <div class="dropdown-content">
-        <a href="/pet-match">AI Pet Match</a>
-        <a href="/grooming">Pet Grooming</a>
-        <a href="/health-services">Pet Health Services</a>
-        <a href="{{ url_for('report_abuse') }}">Report Abuse</a>
-        <a href="/chatbot">Pet Chatbot</a>
-        <a href="/breed_detector">Upload Image & Find Breed</a>
-    </div>
-</div>
-
-        <-- Community Dropdown --
-        <div class="dropdown">
-            <button class="dropbtn" onclick="toggleDropdown(event)">Community ▾</button>
-            <div class="dropdown-content">
-                <a href="/paw-gram">Paw-Gram</a>
-            </div>
-        </div>
-    </div>
-</div>
-    </div>
-</div>-->
+    
 <!-- NAVBAR -->
 <div class="navbar">
     <div class="logo">FurrEver 🐾</div>
 
     <div class="nav-links">
         <a href="/">Home</a>
-
+        
         {% if session.get('user_id') %}
 
         <!-- Services Dropdown -->
@@ -279,7 +240,7 @@
                 <a href="/health-services">Pet Health Services</a>
                 <a href="{{ url_for('report_abuse') }}">Report Abuse</a>
                 <a href="/chatbot">Pet Chatbot</a>
-                <a href="/breed_detector">Find Your Breed</a>
+                <a href="/breed_detector">Find your Breed</a>
             </div>
         </div>
 
@@ -292,23 +253,31 @@
         </div>
 
         <!-- User Dropdown -->
-        <div class="dropdown">
-            <button class="dropbtn username-btn" onclick="toggleDropdown(event)">
-                Hi, {{ session.get("name") }} ▾
-            </button>
+        {% if session.get("name") %}
+            <div class="dropdown">
+                <button class="dropbtn username-btn" onclick="toggleDropdown(event)">
+                    Hi, {{ session.get("name") }} ▾
+                </button>
 
-            <div class="dropdown-content">
-                <a href="{{ url_for('owner_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
+                <div class="dropdown-content">
+                    {% if session.get('role') == 'admin' %}
+                        <a href="/admin">Admin Panel</a>
+                    {% else %}
+                        <a href="{{ url_for('owner_dashboard') }}">Dashboard</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
             </div>
-        </div>
 
         {% else %}
             <a href="{{ url_for('auth') }}">Login</a>
         {% endif %}
-
+            
+        {% endif %}
     </div>
 </div>
+
+
 <!-- HERO -->
 <div class="hero">
     <div>
@@ -371,7 +340,7 @@
             <p>Find nearby veterinary clinics and pet pharmacies.</p>
             <a href="/health-services">Explore</a>
         </div>
-        <div class="card">
+         <div class="card">
             <h3>Find Your Breed</h3>
             <p>Upload an image and discover your pet's breed.</p>
             <a href="/breed_detector">Find Breed</a>
