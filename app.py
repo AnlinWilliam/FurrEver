@@ -1,4 +1,5 @@
 #http://127.0.0.1:5000/
+from django import db
 from flask import Flask, render_template, request, redirect,session, url_for
 import mysql.connector
 from urllib.parse import urlparse
@@ -146,7 +147,8 @@ def get_db():
         database=os.getenv("MYSQLDATABASE"),
         port=int(os.getenv("MYSQLPORT"))
     )
-
+db=get_db()
+cursor = db.cursor(dictionary=True)
 
 # -------- ---------HOME PAGE -----------------------------
 @app.route('/')
@@ -1311,7 +1313,7 @@ def logout():
 def profile(username):
     if "user_id" not in session:
         return redirect(url_for("auth"))
-    
+    db=get_db()
     cursor = db.cursor(dictionary=True)
 
     # get user info
@@ -1471,7 +1473,7 @@ def add_comment():
 def edit_profile():
     if "user_id" not in session:
         return redirect(url_for("auth"))
-
+    db=get_db()
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users WHERE id=%s", (session["user_id"],))
     user = cursor.fetchone()
@@ -1741,4 +1743,4 @@ def get_health_services():
 # if __name__ == "__main__":
 #     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
